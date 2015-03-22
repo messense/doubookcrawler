@@ -23,6 +23,10 @@ DEBUG = True
 CONCURRENT_ITEMS = 300
 CONCURRENT_REQUESTS = 2
 
+ITEM_PIPELINES = {
+    'doubookcrawler.pipelines.DoubookCrawlerPipeline': 300,
+}
+
 db_conn = MySQLdb.connect(
     host='localhost',
     port=3306,
