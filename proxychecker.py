@@ -47,9 +47,14 @@ def main():
     pool = ThreadPool(multiprocessing.cpu_count() * 2 + 1)
     async_results = []
     for index, proxy in enumerate(proxy_list):
+        if proxy.startswith('http://'):
+            curr_proxy = proxy[7:].strip()
+        else:
+            curr_proxy = proxy.strip()
+
         async_results.append(pool.apply_async(
             check_proxy,
-            args=(proxy[7:].strip(), index, total)
+            args=(curr_proxy, index, total)
         ))
     pool.close()
     pool.join()
