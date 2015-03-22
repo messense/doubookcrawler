@@ -34,7 +34,7 @@ def check_proxy(pip, index, total):
         logger.info("Bad Proxy %s", pip)
         return None
     logger.info("%s is working", pip)
-    return pip
+    return 'http://' + pip
 
 
 def main():
@@ -44,7 +44,7 @@ def main():
         proxy_list = f.readlines()
 
     total = len(proxy_list)
-    pool = ThreadPool(multiprocessing.cpu_count())
+    pool = ThreadPool(multiprocessing.cpu_count() * 2 + 1)
     async_results = []
     for index, proxy in enumerate(proxy_list):
         async_results.append(pool.apply_async(
@@ -65,7 +65,7 @@ def main():
 
     with open('proxy.txt', 'w') as f:
         for proxy in good_proxys:
-            f.write(proxy)
+            f.write(proxy + '\n')
 
 if __name__ == '__main__':
     fmt = logging.Formatter('%(asctime)s %(name)s [%(levelname)s]: %(message)s')
