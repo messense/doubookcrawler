@@ -50,7 +50,7 @@ class Book(BaseModel):
         sql = """CREATE TABLE IF NOT EXISTS {table}(
         id BIGINT NOT NULL PRIMARY KEY,
         title VARCHAR(256) NOT NULL,
-        author VARCHAR(50) NOT NULL,
+        author VARCHAR(128) NOT NULL,
         rating FLOAT NOT NULL DEFAULT 0,
         INDEX(rating),
         INDEX(author)
