@@ -41,7 +41,8 @@ class BookSpider(scrapy.Spider):
             return
 
         tags = response.xpath('//table[@class="tagCol"]/tbody/tr/td/a/@href')
-        tags = random.shuffle(tags.extract())
+        tags = tags.extract()
+        random.shuffle(tags)
         for tag in tags:
             url = urlparse.urljoin(self.start_urls[0], tag)
             yield Request(url, callback=self.parse_tag)
