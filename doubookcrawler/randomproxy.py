@@ -27,13 +27,13 @@ from scrapy import log
 class RandomProxy(object):
 
     def __init__(self, settings):
+        self.proxies = {}
         self.proxy_list = settings.get('PROXY_LIST')
         if not self.proxy_list:
             return
 
         fin = open(self.proxy_list)
 
-        self.proxies = {}
         for line in fin.readlines():
             parts = re.match('(\w+://)(\w+:\w+@)?(.+)', line)
 
@@ -68,6 +68,9 @@ class RandomProxy(object):
             request.headers['Proxy-Authorization'] = basic_auth
 
     def process_exception(self, request, exception, spider):
+        if 'proxy' not in request.meta:
+            return
+
         proxy = request.meta['proxy']
         log.msg('Removing failed proxy <%s>, %d proxies left' % (
             proxy, len(self.proxies))
