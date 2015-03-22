@@ -18,10 +18,10 @@ USER_AGENT = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) '
               'AppleWebKit/537.36 (KHTML, like Gecko) '
               'Chrome/40.0.2214.94 Safari/537.36')
 
-DEBUG = True
+DEBUG = False
 
 CONCURRENT_ITEMS = 300
-CONCURRENT_REQUESTS = 2
+CONCURRENT_REQUESTS = 5
 
 ITEM_PIPELINES = {
     'doubookcrawler.pipelines.DoubookCrawlerPipeline': 300,
@@ -43,7 +43,7 @@ DOWNLOADER_MIDDLEWARES = {
 # http://username:password@host2:port
 # http://host3:port
 # ...
-PROXY_LIST = ''
+PROXY_LIST = '/Users/messense/Projects/doubookcrawler/proxy.txt'
 
 db_conn = MySQLdb.connect(
     host='localhost',

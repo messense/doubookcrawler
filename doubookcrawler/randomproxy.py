@@ -32,9 +32,13 @@ class RandomProxy(object):
         if not self.proxy_list:
             return
 
-        fin = open(self.proxy_list)
+        try:
+            with open(self.proxy_list) as f:
+                lines = f.readlines()
+        except (IOError, EOFError):
+            return
 
-        for line in fin.readlines():
+        for line in lines:
             parts = re.match('(\w+://)(\w+:\w+@)?(.+)', line)
 
             # Cut trailing @
@@ -44,8 +48,6 @@ class RandomProxy(object):
                 user_pass = ''
 
             self.proxies[parts.group(1) + parts.group(3)] = user_pass
-
-        fin.close()
 
     @classmethod
     def from_crawler(cls, crawler):
