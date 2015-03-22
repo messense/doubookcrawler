@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 try:
     import urllib.parse as urlparse
 except ImportError:
@@ -40,7 +41,8 @@ class BookSpider(scrapy.Spider):
             return
 
         tags = response.xpath('//table[@class="tagCol"]/tbody/tr/td/a/@href')
-        for tag in tags.extract():
+        tags = random.shuffle(tags.extract())
+        for tag in tags:
             url = urlparse.urljoin(self.start_urls[0], tag)
             yield Request(url, callback=self.parse_tag)
             if self.settings['DEBUG']:
