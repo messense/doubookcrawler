@@ -80,5 +80,5 @@ class RandomProxy(object):
         )
         try:
             del self.proxies[proxy]
-        except ValueError:
+        except KeyError:
             pass
