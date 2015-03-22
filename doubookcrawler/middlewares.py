@@ -25,7 +25,7 @@ class RetryMiddleware(_RetryMiddleware):
             if retryreq.url.startswith('http://www.douban.com/misc/sorry?original-url='):
                 query = urlparse.urlsplit(retryreq.url).query
                 query_parsed = urlparse.parse_qs(query)
-                original_url = urllib.unquote(query_parsed['original-url'])
+                original_url = urllib.unquote(query_parsed['original-url'][0])
                 retryreq.url = original_url
             return retryreq
         else:
