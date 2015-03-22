@@ -1,4 +1,3 @@
 Scrapy
 MySQL-python
-peewee
 service_identity

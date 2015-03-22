@@ -7,6 +7,7 @@
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
+import MySQLdb
 
 BOT_NAME = 'doubookcrawler'
 
@@ -21,3 +22,12 @@ DEBUG = True
 
 CONCURRENT_ITEMS = 300
 CONCURRENT_REQUESTS = 2
+
+db_conn = MySQLdb.connect(
+    host='localhost',
+    port=3306,
+    user='root',
+    passwd='',
+    db='doubook',
+    charset='utf8',
+)
