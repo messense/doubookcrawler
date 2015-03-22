@@ -17,16 +17,18 @@ class RetryMiddleware(_RetryMiddleware):
         if retries <= self.max_retry_times:
             log.msg(format="Retrying %(request)s (failed %(retries)d times): %(reason)s",
                     level=log.DEBUG, spider=spider, request=request, retries=retries, reason=reason)
-            retryreq = request.copy()
+
+            if request.url.startswith('http://www.douban.com/misc/sorry?original-url='):
+                query = urlparse.urlsplit(request.url).query
+                query_parsed = urlparse.parse_qs(query)
+                url = urllib.unquote(query_parsed['original-url'][0])
+            else:
+                url = request.url
+            retryreq = request.replace(url=url)
             retryreq.meta['retry_times'] = retries
             retryreq.dont_filter = True
             retryreq.priority = request.priority + self.priority_adjust
 
-            if retryreq.url.startswith('http://www.douban.com/misc/sorry?original-url='):
-                query = urlparse.urlsplit(retryreq.url).query
-                query_parsed = urlparse.parse_qs(query)
-                original_url = urllib.unquote(query_parsed['original-url'][0])
-                retryreq.url = original_url
             return retryreq
         else:
             log.msg(format="Gave up retrying %(request)s (failed %(retries)d times): %(reason)s",
