@@ -18,7 +18,27 @@ class BookSpider(scrapy.Spider):
         'http://book.douban.com/tag/',
     )
 
+    def is_baned(self, response):
+        return response.status == 302
+
+    def start_requests(self):
+        for url in self.start_urls:
+            yield Request(
+                url,
+                callback=self.parse,
+                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+            )
+
     def parse(self, response):
+        if self.is_baned(response):
+            yield Request(
+                response.url,
+                callback=self.parse,
+                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                dont_filter=True
+            )
+            return
+
         tags = response.xpath('//table[@class="tagCol"]/tbody/tr/td/a/@href')
         for tag in tags.extract():
             url = urlparse.urljoin(self.start_urls[0], tag)
@@ -27,6 +47,15 @@ class BookSpider(scrapy.Spider):
                 break
 
     def parse_tag(self, response):
+        if self.is_baned(response):
+            yield Request(
+                response.url,
+                callback=self.parse_tag,
+                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                dont_filter=True
+            )
+            return
+
         books = response.xpath('//ul/li[@class="subject-item"]/div[@class="info"]')
         for book in books:
             url = book.xpath('h2/a/@href').extract()
@@ -66,6 +95,15 @@ class BookSpider(scrapy.Spider):
             yield Request(next_url, callback=self.parse_tag)
 
     def parse_comments(self, response):
+        if self.is_baned(response):
+            yield Request(
+                response.url,
+                callback=self.parse_comments,
+                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                dont_filter=True
+            )
+            return
+
         rating_classes = {
             'allstar50': 5,
             'allstar40': 4,
