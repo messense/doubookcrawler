@@ -56,3 +56,7 @@ docs/_build/
 
 # PyCharm
 .idea/
+
+# custom
+proxy.txt
+proxylist.txt

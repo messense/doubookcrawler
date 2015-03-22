@@ -7,7 +7,11 @@
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
+import os
 import MySQLdb
+
+CURR_PATH = os.path.abspath(os.path.dirname(__file__))
+PROJ_PATH = os.path.dirname(CURR_PATH)
 
 BOT_NAME = 'doubookcrawler'
 
@@ -43,7 +47,7 @@ DOWNLOADER_MIDDLEWARES = {
 # http://username:password@host2:port
 # http://host3:port
 # ...
-PROXY_LIST = '/Users/messense/Projects/doubookcrawler/proxy.txt'
+PROXY_LIST = os.path.join(PROJ_PATH, 'proxy.txt')
 
 db_conn = MySQLdb.connect(
     host='localhost',
