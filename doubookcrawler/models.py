@@ -64,6 +64,7 @@ class Book(BaseModel):
 
 class Rating(BaseModel):
     _table = 'rating'
+    _fields = 'book_id,user,rating,vote'
 
     @classmethod
     def upsert_rating(cls, rating):
