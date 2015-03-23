@@ -18,20 +18,25 @@ class BookSpider(scrapy.Spider):
     start_urls = (
         'http://book.douban.com/tag/',
     )
+    handle_httpstatus_list = [302, 403]
 
-    def is_baned(self, response):
-        return response.status == 302
+    def is_banned(self, response):
+        banned_status = self.settings.get('RETRY_HTTP_CODES', [302, 403])
+        return response.status in banned_status
 
     def start_requests(self):
         for url in self.start_urls:
             yield Request(
                 url,
                 callback=self.parse,
-                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                meta={
+                    'dont_redirect': True,
+                    'handle_httpstatus_list': [302, 403]
+                },
             )
 
     def parse(self, response):
-        if self.is_baned(response):
+        if self.is_banned(response):
             yield Request(
                 response.url,
                 callback=self.parse,
@@ -50,11 +55,14 @@ class BookSpider(scrapy.Spider):
                 break
 
     def parse_tag(self, response):
-        if self.is_baned(response):
+        if self.is_banned(response):
             yield Request(
                 response.url,
                 callback=self.parse_tag,
-                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                meta={
+                    'dont_redirect': True,
+                    'handle_httpstatus_list': [302, 403]
+                },
                 dont_filter=True
             )
             return
@@ -98,11 +106,14 @@ class BookSpider(scrapy.Spider):
             yield Request(next_url, callback=self.parse_tag)
 
     def parse_comments(self, response):
-        if self.is_baned(response):
+        if self.is_banned(response):
             yield Request(
                 response.url,
                 callback=self.parse_comments,
-                meta={'dont_redirect': True, 'handle_httpstatus_list': [302]},
+                meta={
+                    'dont_redirect': True,
+                    'handle_httpstatus_list': [302, 403]
+                },
                 dont_filter=True
             )
             return

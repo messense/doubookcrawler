@@ -38,8 +38,8 @@ RETRY_HTTP_CODES = [500, 503, 504, 400, 403, 404, 408]
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.contrib.downloadermiddleware.retry.RetryMiddleware': None,
-    'doubookcrawler.middlewares.RetryMiddleware': 90,
-    'doubookcrawler.randomproxy.RandomProxy': 100,
+    'doubookcrawler.randomproxy.RandomProxy': 90,
+    'doubookcrawler.middlewares.RetryMiddleware': 100,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
 }
 
