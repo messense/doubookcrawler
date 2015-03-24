@@ -97,6 +97,50 @@ class Rating(BaseModel):
         cls.close_cursor(cursor)
 
 
+class CrawledURL(BaseModel):
+    _table = 'crawled_url'
+    _fields = 'url'
+
+    @classmethod
+    def add_url(cls, url):
+        sql = "INSERT INTO {table}({fields}) VALUES(%(url)s)".format(
+            table=cls._table,
+            fields=cls._fields
+        )
+        cursor, conn = cls.get_cursor()
+        cursor.execute(sql, {'url': url})
+        conn.commit()
+        cls.close_cursor(cursor)
+
+    @classmethod
+    def get_urls(cls):
+        sql = "SELECT {fields} FROM {table}".format(
+            table=cls._table,
+            fields=cls._fields
+        )
+        cursor, conn = cls.get_cursor()
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        cls.close_cursor(cursor)
+        if not rows:
+            return []
+        urls = [row[0] for row in rows]
+        return urls
+
+    @classmethod
+    def create_table(cls):
+        sql = """CREATE TABLE IF NOT EXISTS {table} (
+        id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        url VARCHAR(256) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        """.format(table=cls._table)
+        cursor, conn = cls.get_cursor()
+        cursor.execute(sql)
+        conn.commit()
+        cls.close_cursor(cursor)
+
+
 if __name__ == '__main__':
     Book.create_table()
     Rating.create_table()
+    CrawledURL.create_table()
